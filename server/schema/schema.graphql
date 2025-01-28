@@ -1,0 +1,87 @@
+type Query {
+  # List of all entities
+  posts: [Post!]
+  users: [User!]
+  profiles: [Profile!]
+  # Single entity by ID
+  post(id: ID!): Post
+  user(id: ID!): User
+  profile(id: ID!): Profile
+}
+
+type Mutation {
+  # Create a new entity
+  createPost(input: CreatePost): Post!
+  createUser(input: CreateUser): User!
+  createProfile(input: CreateProfile): Profile!
+  # Update an entity by ID
+  updatePost(id: ID!, input: UpdatePost): Post!
+  updateUser(id: ID!, input: UpdateUser): User!
+  updateProfile(id: ID!, input: UpdateProfile): Profile!
+  # Delete an entity by ID
+  deletePost(id: ID!): Post!
+  deleteUser(id: ID!): User!
+  deleteProfile(id: ID!): Profile!
+}
+
+input CreatePost {
+  title: String!
+  content: String!
+  published: Boolean!
+}
+
+input CreateUser {
+  name: String!
+  email: String!
+  password: String!
+}
+input CreateProfile {
+  bio: String!
+}
+
+input UpdatePost {
+  title: String
+  content: String
+  published: Boolean
+}
+
+input UpdateUser {
+  name: String
+  email: String
+  password: String
+}
+
+input UpdateProfile {
+  bio: String
+}
+
+type Post {
+  id: ID!
+  title: String!
+  content: String!
+  published: Boolean!
+  createdAt: String!
+  updatedAt: String!
+  authorId: ID!
+  author: User!
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  password: String!
+  createdAt: String!
+  updatedAt: String!
+  profile: Profile
+  posts: [Post!]
+}
+
+type Profile {
+  id: ID!
+  bio: String!
+  createdAt: String!
+  updatedAt: String!
+  userId: ID!
+  user: User!
+}

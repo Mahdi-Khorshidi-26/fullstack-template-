@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_PUBLIC")
+}
+
+// Define your own datamodels here
+// Also we should notice that the schema is defined in here is just a draft
+// We should modify it according to our needs
+// Learn more about writing a Prisma schema: https://pris.ly/d/prisma-schema
+//Also the relationships are defined here like : 
+// 1. One to One  ==> like : user to profile
+// 2. One to Many ==> like : user to posts
+// 3. Many to Many and so on
+model Post {
+  id          Int       @id @default(autoincrement())
+  title       String
+  content     String
+  published   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  authorId    Int       @unique
+  author      User      @relation(fields: [authorId], references: [id])
+}
+
+model User{
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String    @unique
+  password    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  posts       Post[]
+  profile     Profile?
+}
+
+
+model Profile{
+  id          Int       @id @default(autoincrement())
+  bio         String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  userId      Int       @unique
+  user        User      @relation(fields: [userId], references: [id])
+}
+
