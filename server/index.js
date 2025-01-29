@@ -8,7 +8,7 @@ import { resolvers } from "./resolvers/resolvers.js";
 import { PrismaClient, Prisma } from "@prisma/client";
 
 // Create a new instance of PrismaClient to use as the database client
-const prisma = new PrismaClient();
+export const prisma = new PrismaClient();
 
 // Configuration for env file for the server
 import dotenv from "dotenv";
@@ -20,7 +20,7 @@ const app = express();
 app.use(cors(), express.json(), authMiddleware);
 
 // Create a new route for the login endpoint
-app.post("/login", () => handleLogin({ req, res, prisma }));
+app.post("/login", handleLogin);
 
 // Create a new instance typeDefs from the schema file
 const typeDefs = await readFile("./schema/schema.graphql", "utf-8");
@@ -36,7 +36,7 @@ await apolloServer.start();
 function getContext({ req }) {
   const context = { prisma };
   if (req.auth) {
-    context.user = req.auth.sub;
+    context.user = req.auth;
   }
   return context;
 }

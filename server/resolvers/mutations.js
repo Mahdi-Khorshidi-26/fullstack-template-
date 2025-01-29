@@ -26,6 +26,10 @@ export const Mutation = {
     { input: { name, email, password } },
     { prisma, user }
   ) => {
+    console.log("user", user);
+    if (!user) {
+      customGraphQLErrorHandler("User not authenticated", "UNAUTHENTICATED");
+    }
     if (!validator.isEmail(email)) {
       customGraphQLErrorHandler("Invalid email", "INVALID_EMAIL");
     }
@@ -38,7 +42,7 @@ export const Mutation = {
     const hashedPassword = await bcrypt.hash(password, 10);
     const createdUser = mutationPrismaHelper(prisma, "user", "create", {
       data: {
-        id: 3,
+        id: 2,
         name,
         email,
         password: hashedPassword,
