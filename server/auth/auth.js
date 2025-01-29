@@ -1,5 +1,6 @@
 import { expressjwt } from "express-jwt";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 
 const secret = Buffer.from("Zn8Q5tyZ/G1MHltc4F/gTkVJMlrbKiZt", "base64");
 
@@ -9,16 +10,21 @@ export const authMiddleware = expressjwt({
   secret,
 });
 
-export async function handleLogin(req, res) {
+export async function handleLogin({ req, res, prisma }) {
   const { email, password } = req.body;
-  console.log("user", email, password);
-
-  //   const user = await getUserByEmail(email);
-  //   if (!user || user.password !== password) {
-  //     res.sendStatus(401);
-  //   } else {
-  //     const claims = { sub: user.id, email: user.email };
-  //     const token = jwt.sign(claims, secret);
-  //     res.json({ token });
-  //   }
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+  const validPassword = user
+    ? await bcrypt.compare(password, user.password)
+    : false;
+  if (!user || validPassword) {
+    res.sendStatus(401);
+  } else {
+    const claims = { sub: user.id, email: user.email };
+    const token = jwt.sign(claims, secret);
+    res.json({ token });
+  }
 }

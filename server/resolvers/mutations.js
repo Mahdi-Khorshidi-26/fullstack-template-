@@ -1,5 +1,7 @@
 import { mutationPrismaHelper } from "./dbFunctionHelper.js";
 import { customGraphQLErrorHandler } from "./resolvers.js";
+import validator from "validator";
+import bcrypt from "bcryptjs";
 
 export const Mutation = {
   // Create a new entity
@@ -24,12 +26,22 @@ export const Mutation = {
     { input: { name, email, password } },
     { prisma, user }
   ) => {
+    if (!validator.isEmail(email)) {
+      customGraphQLErrorHandler("Invalid email", "INVALID_EMAIL");
+    }
+    if (password.length < 8) {
+      customGraphQLErrorHandler(
+        "Password must be at least 8 characters",
+        "PASSWORD_TOO_SHORT"
+      );
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
     const createdUser = mutationPrismaHelper(prisma, "user", "create", {
       data: {
         id: 3,
         name,
         email,
-        password,
+        password: hashedPassword,
       },
     });
     return createdUser;

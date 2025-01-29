@@ -20,7 +20,7 @@ const app = express();
 app.use(cors(), express.json(), authMiddleware);
 
 // Create a new route for the login endpoint
-app.post("/login", handleLogin);
+app.post("/login", () => handleLogin({ req, res, prisma }));
 
 // Create a new instance typeDefs from the schema file
 const typeDefs = await readFile("./schema/schema.graphql", "utf-8");
