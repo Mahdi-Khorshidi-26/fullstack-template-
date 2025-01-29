@@ -10,12 +10,15 @@ export const Mutation = {
     { input: { title, content, published } },
     { prisma, user }
   ) => {
+    if (!user) {
+      customGraphQLErrorHandler("User not authenticated", "UNAUTHENTICATED");
+    }
     const post = mutationPrismaHelper(prisma, "post", "create", {
       data: {
         title,
         content,
         published,
-        authorId: 2,
+        authorId: user.sub,
       },
     });
 
@@ -50,11 +53,14 @@ export const Mutation = {
     });
     return createdUser;
   },
-  createProfile: async (parent, { input: { bio } }, { prisma, user }) => {
+  createProfile: async (_parent, { input: { bio } }, { prisma, user }) => {
+    if (!user) {
+      customGraphQLErrorHandler("User not authenticated", "UNAUTHENTICATED");
+    }
     const profile = mutationPrismaHelper(prisma, "profile", "create", {
       data: {
         bio,
-        userId: 3,
+        userId: parseInt(user.sub),
       },
     });
 

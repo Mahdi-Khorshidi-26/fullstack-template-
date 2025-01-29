@@ -63,7 +63,7 @@ type Post {
   createdAt: String!
   updatedAt: String!
   authorId: ID!
-  author: User!
+  user: User!
 }
 
 type User {
