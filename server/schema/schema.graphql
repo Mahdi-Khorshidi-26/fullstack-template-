@@ -1,6 +1,6 @@
 type Query {
   # List of all entities
-  posts: [Post!]
+  posts(offset: Int, limit: Int): [Post!]
   users: [User!]
   profiles: [Profile!]
   # Single entity by ID

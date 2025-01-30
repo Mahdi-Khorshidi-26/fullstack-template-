@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-
+import { userLoader } from "../loaders/userLoader.js";
 export function customGraphQLErrorHandler(errorMessage, extensionsCode) {
   throw new GraphQLError(errorMessage, {
     extensions: {
@@ -53,12 +53,13 @@ export const resolvers = {
   },
   Post: {
     user: (parent, _args, { prisma }) => {
-      const user = prisma.user.findUnique({
-        where: {
-          id: parent.authorId,
-        },
-      });
-      return user;
+      // const user = prisma.user.findUnique({
+      //   where: {
+      //     id: parent.authorId,
+      //   },
+      // });
+      // return user;
+      return userLoader.load(parent.authorId);
     },
   },
 };

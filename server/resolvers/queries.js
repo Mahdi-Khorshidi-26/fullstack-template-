@@ -1,12 +1,14 @@
 export const Query = {
   // List of all entities
-  posts: async (parent, args, { prisma, user }) => {
+  posts: async (parent, { offset = 0, limit = 10 }, { prisma, user }) => {
     const posts = await prisma.post.findMany({
       orderBy: [
         {
           createdAt: "desc",
         },
       ],
+      skip: offset,
+      take: limit,
     });
     return posts;
   },
