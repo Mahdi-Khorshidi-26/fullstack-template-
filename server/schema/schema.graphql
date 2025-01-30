@@ -1,8 +1,8 @@
 type Query {
   # List of all entities
   posts(offset: Int, limit: Int): [Post!]
-  users: [User!]
-  profiles: [Profile!]
+  users(offset: Int, limit: Int): [User!]
+  profiles(offset: Int, limit: Int): [Profile!]
   # Single entity by ID
   post(id: ID!): Post
   user(id: ID!): User
@@ -74,7 +74,7 @@ type User {
   createdAt: String!
   updatedAt: String!
   profile: Profile
-  posts: [Post!]
+  posts(offset: Int, limit: Int): [Post!]
 }
 
 type Profile {
